@@ -98,7 +98,7 @@ Conforme os requisitos técnicos da sprint:
 
 1.  **Clone o Repositório:**
     ```bash
-    git clone challenge-java-springboot
+    git clone https://github.com/ovitortadeu/challenge-java-springboot
     cd ChallengeJavaMottu
     ```
 
