@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="pt-br" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title th:text="${veiculo.id == null} ? 'Novo Veículo' : 'Editar Veículo'"></title>
+    <!-- Adicionando uma referência para os estilos, caso estejam em um arquivo CSS separado no futuro -->
+    <link rel="stylesheet" th:href="@{/css/style.css}" /> 
+</head> <!-- TAG DE FECHAMENTO ADICIONADA AQUI -->
+<body>
+    <!-- INCLUI O CABEÇALHO -->
+    <div th:replace="~{layout :: header}"></div>
+
+    <main>
+        <h3 th:text="${veiculo.id == null} ? 'Cadastrar Novo Veículo' : 'Editar Veículo'"></h3>
+        <form th:action="@{/veiculos/save}" th:object="${veiculo}" method="post">
+            <input type="hidden" th:field="*{id}" />
+    
+            <div style="margin-bottom: 15px;">
+                <label for="placaNova">Placa (Mercosul):</label><br>
+                <input type="text" id="placaNova" th:field="*{placaNova}" />
+                <br><span style="color:red;" th:if="${#fields.hasErrors('placaNova')}" th:errors="*{placaNova}"></span>
+            </div>
+            
+            <div style="margin-bottom: 15px;">
+                <label for="placaAntiga">Placa Antiga (Opcional):</label><br>
+                <input type="text" id="placaAntiga" th:field="*{placaAntiga}" />
+            </div>
+            
+            <div style="margin-bottom: 15px;">
+                <label for="tipoVeiculo">Tipo do Veículo:</label><br>
+                <input type="text" id="tipoVeiculo" th:field="*{tipoVeiculo}" />
+                <br><span style="color:red;" th:if="${#fields.hasErrors('tipoVeiculo')}" th:errors="*{tipoVeiculo}"></span>
+            </div>
+            
+            <div style="margin-bottom: 15px;">
+                <label for="usuario">Proprietário:</label><br>
+                <select id="usuario" th:field="*{usuario}">
+                    <option value="">Selecione um proprietário</option>
+                    <option th:each="user : ${todosUsuarios}"
+                            th:value="${user.id}"
+                            th:text="${user.username}">
+                    </option>
+                </select>
+                <br><span style="color:red;" th:if="${#fields.hasErrors('usuario')}" th:errors="*{usuario}"></span>
+            </div>
+            
+            <button type="submit">Salvar</button>
+            <a th:href="@{/veiculos}">Cancelar</a>
+        </form>
+    </main>
+
+    <!-- INCLUI O RODAPÉ -->
+    <div th:replace="~{layout :: footer}"></div>
+</body>
+</html>

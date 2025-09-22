@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="pt-br" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/springsecurity6">
+<head>
+    <meta charset="UTF-8">
+    <title>Lista de Veículos</title>
+    <style>
+        /* Adicione aqui os estilos do layout.html */
+        body { font-family: sans-serif; margin: 0; padding: 0; }
+        header { background-color: #333; color: white; padding: 10px 20px; display: flex; justify-content: space-between; align-items: center; }
+        header h2 { margin: 0; }
+        header nav a { color: white; text-decoration: none; margin: 0 10px; }
+        main { padding: 20px; }
+        footer { position: fixed; bottom: 0; left: 0; width: 100%; text-align: center; padding: 10px; background-color: #f2f2f2; border-top: 1px solid #ccc; }
+        table { border-collapse: collapse; width: 100%; margin-top: 20px; }
+        th, td { border: 1px solid #ddd; padding: 8px; text-align: left; }
+        th { background-color: #f2f2f2; }
+        .success-message { color: green; border: 1px solid green; background-color: #e6ffed; padding: 10px; margin-bottom: 15px; }
+        .error-message { color: red; border: 1px solid red; background-color: #ffe6e6; padding: 10px; margin-bottom: 15px; }
+    </style>
+</head>
+<body>
+    <!-- INCLUI O CABEÇALHO -->
+    <div th:replace="~{layout :: header}"></div>
+
+    <main>
+        <h3>Frota de Veículos</h3>
+        
+        <!-- BOTÃO DASHBOARD ADICIONADO AQUI -->
+        <div sec:authorize="hasRole('ADMIN')" style="margin-bottom: 15px;">
+            <a href="/veiculos/new">Adicionar Novo Veículo</a>
+            <a th:href="@{/dashboard}" style="margin-left: 20px; background-color: #007bff; color: white; padding: 5px 10px; text-decoration: none; border-radius: 3px;">Ver Dashboard</a>
+        </div>
+        
+        <div th:if="${message}" class="success-message" th:text="${message}"></div>
+        <div th:if="${error}" class="error-message" th:text="${error}"></div>
+
+        <table>
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Placa</th>
+                    <th>Tipo</th>
+                    <th>Proprietário</th>
+                    <th sec:authorize="hasRole('ADMIN')">Ações</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr th:if="${veiculos.isEmpty()}">
+                    <td colspan="5">Nenhum veículo encontrado.</td>
+                </tr>
+                <tr th:each="veiculo : ${veiculos}">
+                    <td th:text="${veiculo.id}">1</td>
+                    <td th:text="${veiculo.placaNova}">BRA2E19</td>
+                    <td th:text="${veiculo.tipoVeiculo}">Moto</td>
+                    <td th:text="${veiculo.usuario.username}">user</td>
+                    <td sec:authorize="hasRole('ADMIN')">
+                        <a th:href="@{/veiculos/edit/{id}(id=${veiculo.id})}">Editar</a>
+                        |
+                        <a th:href="@{/veiculos/delete/{id}(id=${veiculo.id})}">Excluir</a>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+   </main>
+
+    <!-- INCLUI O RODAPÉ -->
+    <div th:replace="~{layout :: footer}"></div>
+</body>
+</html>

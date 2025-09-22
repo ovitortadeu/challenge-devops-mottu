@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="pt-br" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/springsecurity6">
+<head>
+    <meta charset="UTF-8">
+    <title th:text="${pageTitle} ?: 'Gestão Mottu'"></title>
+    <style>
+        body { font-family: sans-serif; margin: 0; padding: 0; }
+        header { background-color: #333; color: white; padding: 10px 20px; display: flex; justify-content: space-between; align-items: center; }
+        header h2 { margin: 0; }
+        header nav a { color: white; text-decoration: none; margin: 0 10px; }
+        main { padding: 20px; }
+        footer { position: fixed; bottom: 0; left: 0; width: 100%; text-align: center; padding: 10px; background-color: #f2f2f2; border-top: 1px solid #ccc; }
+        table { border-collapse: collapse; width: 100%; margin-top: 20px; }
+        th, td { border: 1px solid #ddd; padding: 8px; text-align: left; }
+        th { background-color: #f2f2f2; }
+        .success-message { color: green; border: 1px solid green; background-color: #e6ffed; padding: 10px; margin-bottom: 15px; }
+        .error-message { color: red; border: 1px solid red; background-color: #ffe6e6; padding: 10px; margin-bottom: 15px; }
+    </style>
+</head>
+<body>
+    <header th:fragment="header" style="background-color: #333; color: white; padding: 10px 20px; display: flex; justify-content: space-between; align-items: center;">
+        <h2>Sistema de Gerenciamento Mottu</h2>
+        <nav>
+            <a th:href="@{/dashboard}" sec:authorize="hasRole('ADMIN')">Dashboard</a>
+            <span sec:authorize="hasRole('ADMIN')">|</span>
+            <a th:href="@{/veiculos}">Veículos</a>
+        </nav>
+        <form th:action="@{/logout}" method="post">
+            <button type="submit">Sair</button>
+        </form>
+    </header>
+
+    <main style="padding: 20px;">
+    </main>
+    
+    <footer th:fragment="footer" style="position: fixed; bottom: 0; left: 0; width: 100%; text-align: center; padding: 10px; background-color: #f2f2f2; border-top: 1px solid #ccc;">
+        <p>&copy; 2025 - Challenge Mottu</p>
+    </footer>
+</body>
+</html>

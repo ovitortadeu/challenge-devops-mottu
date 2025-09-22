@@ -4,8 +4,8 @@ import jakarta.persistence.*;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
-@Entity
-@Table(name = "TB_MTT_CAMERA")
+ @Entity
+ @Table(name = "TB_MTT_CAMERA")
 @Data
 @EqualsAndHashCode(onlyExplicitlyIncluded = true)
 public class Camera {
