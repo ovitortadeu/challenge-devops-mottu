@@ -21,7 +21,7 @@ INSERT INTO TB_MTT_FILIAL (id) VALUES (DEFAULT);
 
 -- Senha para 'admin' é 'admin123'
 INSERT INTO TB_MTT_USUARIO (username, email, senha, role) VALUES ('admin', 'admin@mottu.com', '$2a$10$QcNYXeLct7FZKvPxSd/dwe2lSl5gH6Gz.EVJ2m4bdFIByfwSw8bFS', 'ADMIN');
-INSERT INTO TB_MTT_USUARIO (username, email, senha, role) VALUES ('user', 'user@mottu.com', '$2a$10$Y1/yJ.Q/dD2A8.pOR8h3UuG8p2f/aI5uKb.bY/1j9/x8C8e3U0jS.', 'USER');
+INSERT INTO TB_MTT_USUARIO (username, email, senha, role) VALUES ('user', 'user@mottu.com', '$2a$10$debnHh68p8wTdJq6Lohqlej5jehfin0SB45LqQLqZlzL9T6SYwUBG', 'USER');
 INSERT INTO TB_MTT_USUARIO (username, email, senha, role) VALUES ('flima', 'fernanda.lima@example.com', '$2a$10$E2upv52Y6s.33e4L6tVv3.42c23U0.Ie9.n23uA0A6z5A2g1g5G3e', 'USER');
 
 -- Veículos (associados aos usuários criados)
