@@ -27,4 +27,6 @@ jobs:
           SPRING_DATASOURCE_URL: ${{ secrets.SPRING_DATASOURCE_URL }}
           SPRING_DATASOURCE_USERNAME: ${{ secrets.SPRING_DATASOURCE_USERNAME }}
           SPRING_DATASOURCE_PASSWORD: ${{ secrets.SPRING_DATASOURCE_PASSWORD }}
-        run: mvn clean package --file 'challenge java/demo/pom.xml' -DskipTests
+        run: |
+          cd 'challenge java/demo'
+          mvn clean package -DskipTests
