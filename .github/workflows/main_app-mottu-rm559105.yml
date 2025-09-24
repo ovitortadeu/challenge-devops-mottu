@@ -10,24 +10,21 @@ on:
   workflow_dispatch:
 
 jobs:
-  build-and-deploy:
+  build:
     runs-on: ubuntu-latest
-    
-    steps:
-    - uses: actions/checkout@v2
-    
-    - name: Set up Java version
-      uses: actions/setup-java@v1
-      with:
-        java-version: '21'
-    
-    - name: Build with Maven
-      run: mvn clean install
 
-    - name: Deploy to Azure Web App
-      uses: azure/webapps-deploy@v2
-      with: 
-        app-name: 'app-mottu-rm559105'
-        slot-name: 'production'
-        publish-profile: ${{ secrets.AzureAppService_PublishProfile_f51079d7d4c842c39db5bec2731abdad }}
-        package: '${{ github.workspace }}/target/*.jar'
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Java version
+        uses: actions/setup-java@v4
+        with:
+          java-version: '21' 
+          distribution: 'temurin'
+
+      - name: Build with Maven
+        env:
+          SPRING_DATASOURCE_URL: ${{ secrets.SPRING_DATASOURCE_URL }}
+          SPRING_DATASOURCE_USERNAME: ${{ secrets.SPRING_DATASOURCE_USERNAME }}
+          SPRING_DATASOURCE_PASSWORD: ${{ secrets.SPRING_DATASOURCE_PASSWORD }}
+        run: mvn clean package --file 'challenge java/demo/pom.xml' -DskipTests
