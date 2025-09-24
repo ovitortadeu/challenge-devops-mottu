@@ -10,36 +10,24 @@ on:
   workflow_dispatch:
 
 jobs:
-  build:
+  build-and-deploy:
     runs-on: ubuntu-latest
-
+    
     steps:
-      - uses: actions/checkout@v4
+    - uses: actions/checkout@v2
+    
+    - name: Set up Java version
+      uses: actions/setup-java@v1
+      with:
+        java-version: '21'
+    
+    - name: Build with Maven
+      run: mvn clean install
 
-      - name: Set up Java version
-        uses: actions/setup-java@v4
-        with:
-          java-version: '21' 
-          distribution: 'temurin'
-
-      - name: Build with Maven
-        env:
-          SPRING_DATASOURCE_URL: ${{ secrets.SPRING_DATASOURCE_URL }}
-          SPRING_DATASOURCE_USERNAME: ${{ secrets.SPRING_DATASOURCE_USERNAME }}
-          SPRING_DATASOURCE_PASSWORD: ${{ secrets.SPRING_DATASOURCE_PASSWORD }}
-        run: |
-          cd 'challenge java/demo'
-          mvn clean package -DskipTests
-      - name: 'Copy artifact to root'
-        run: |
-          mkdir -p staging
-          cp 'challenge java/demo/target'/*.jar staging/app.jar
-
-      - name: 'Deploy to Azure Web App'
-        id: deploy-to-webapp
-        uses: azure/webapps-deploy@v2
-        with:
-          app-name: 'app-mottu-rm559105'
-          slot-name: 'production'
-          package: staging 
-          publish-profile: ${{ secrets.AZUREAPPSERVICE_PUBLISHPROFILE_F51079D7D4C842C39DB5BEC2731ABDAD }}
+    - name: Deploy to Azure Web App
+      uses: azure/webapps-deploy@v2
+      with: 
+        app-name: 'app-mottu-rm559105'
+        slot-name: 'production'
+        publish-profile: ${{ secrets.AZUREAPPSERVICE_PUBLISHPROFILE_F51079D7D4C842C39DB5BEC2731ABDAD }}
+        package: '${{ github.workspace }}/target/*.jar'
