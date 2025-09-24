@@ -30,3 +30,16 @@ jobs:
         run: |
           cd 'challenge java/demo'
           mvn clean package -DskipTests
+      - name: 'Copy artifact to root'
+        run: |
+          mkdir -p staging
+          cp 'challenge java/demo/target'/*.jar staging/app.jar
+
+      - name: 'Deploy to Azure Web App'
+        id: deploy-to-webapp
+        uses: azure/webapps-deploy@v2
+        with:
+          app-name: 'app-mottu-rm559105'
+          slot-name: 'production'
+          package: staging 
+          publish-profile: ${{ secrets.AZUREAPPSERVICE_PUBLISHPROFILE_F51079D7D4C842C39DB5BEC2731ABDAD }}
