@@ -1,6 +1,11 @@
--- V5: Altera o tipo de dado das colunas de ID para BIGINT, removendo e recriando as restrições necessárias.
+-- V5: Altera o tipo de dado das colunas de ID para BIGINT, garantindo as SET options corretas para o SQL Server.
 
--- ETAPA 1: Remover todas as restrições de chave estrangeira que serão recriadas.
+-- ETAPA 1: Configurar a sessão para permitir alterações em tabelas com índices.
+SET ANSI_NULLS ON;
+SET ANSI_WARNINGS ON;
+GO
+
+-- ETAPA 2: Remover todas as restrições de chave estrangeira que serão recriadas.
 ALTER TABLE TB_MTT_CIDADE DROP CONSTRAINT FK_CIDADE_ESTADO;
 ALTER TABLE TB_MTT_VEICULO DROP CONSTRAINT FK_VEICULO_USUARIO;
 ALTER TABLE TB_MTT_CAMERA DROP CONSTRAINT FK_CAMERA_FILIAL;
@@ -9,8 +14,7 @@ ALTER TABLE TB_MTT_LOGRADOURO DROP CONSTRAINT FK_LOGRADOURO_USUARIO;
 ALTER TABLE TB_MTT_LOGRADOURO DROP CONSTRAINT FK_LOGRADOURO_FILIAL;
 ALTER TABLE TB_MTT_LOGRADOURO DROP CONSTRAINT FK_LOGRADOURO_CIDADE;
 
--- ETAPA 2: Remover dinamicamente as restrições de chave primária.
--- O SQL Server gera nomes únicos para PKs, então usamos SQL dinâmico para encontrá-los e removê-los.
+-- ETAPA 3: Remover dinamicamente as restrições de chave primária.
 DECLARE @sql_pk NVARCHAR(MAX) = N'';
 SELECT @sql_pk += N'ALTER TABLE ' + QUOTENAME(OBJECT_SCHEMA_NAME(parent_object_id)) + '.' + QUOTENAME(OBJECT_NAME(parent_object_id)) + ' DROP CONSTRAINT ' + QUOTENAME(name) + ';'
 FROM sys.key_constraints
@@ -20,7 +24,7 @@ WHERE type = 'PK' AND OBJECT_NAME(parent_object_id) IN (
 );
 EXEC sp_executesql @sql_pk;
 
--- ETAPA 3: Agora que as colunas estão livres de restrições, alterar seus tipos.
+-- ETAPA 4: Agora que as colunas estão livres de restrições, alterar seus tipos.
 ALTER TABLE TB_MTT_CAMERA ALTER COLUMN id BIGINT NOT NULL;
 ALTER TABLE TB_MTT_CIDADE ALTER COLUMN id BIGINT NOT NULL;
 ALTER TABLE TB_MTT_ESTADO ALTER COLUMN id BIGINT NOT NULL;
@@ -30,7 +34,7 @@ ALTER TABLE TB_MTT_LOGRADOURO ALTER COLUMN id BIGINT NOT NULL;
 ALTER TABLE TB_MTT_USUARIO ALTER COLUMN id BIGINT NOT NULL;
 ALTER TABLE TB_MTT_VEICULO ALTER COLUMN id BIGINT NOT NULL;
 
--- ETAPA 4: Recriar as restrições de chave primária.
+-- ETAPA 5: Recriar as restrições de chave primária.
 ALTER TABLE TB_MTT_CAMERA ADD PRIMARY KEY (id);
 ALTER TABLE TB_MTT_CIDADE ADD PRIMARY KEY (id);
 ALTER TABLE TB_MTT_ESTADO ADD PRIMARY KEY (id);
@@ -40,7 +44,7 @@ ALTER TABLE TB_MTT_LOGRADOURO ADD PRIMARY KEY (id);
 ALTER TABLE TB_MTT_USUARIO ADD PRIMARY KEY (id);
 ALTER TABLE TB_MTT_VEICULO ADD PRIMARY KEY (id);
 
--- ETAPA 5: Recriar todas as restrições de chave estrangeira.
+-- ETAPA 6: Recriar todas as restrições de chave estrangeira.
 ALTER TABLE TB_MTT_CIDADE ADD CONSTRAINT FK_CIDADE_ESTADO FOREIGN KEY (tb_mtt_estado_id) REFERENCES TB_MTT_ESTADO (id);
 ALTER TABLE TB_MTT_VEICULO ADD CONSTRAINT FK_VEICULO_USUARIO FOREIGN KEY (tb_mtt_usuario_id) REFERENCES TB_MTT_USUARIO (id);
 ALTER TABLE TB_MTT_CAMERA ADD CONSTRAINT FK_CAMERA_FILIAL FOREIGN KEY (tb_mtt_filial_id) REFERENCES TB_MTT_FILIAL (id);
@@ -48,3 +52,4 @@ ALTER TABLE TB_MTT_IOT ADD CONSTRAINT FK_IOT_VEICULO FOREIGN KEY (tb_mtt_veiculo
 ALTER TABLE TB_MTT_LOGRADOURO ADD CONSTRAINT FK_LOGRADOURO_USUARIO FOREIGN KEY (tb_mtt_usuario_id) REFERENCES TB_MTT_USUARIO (id);
 ALTER TABLE TB_MTT_LOGRADOURO ADD CONSTRAINT FK_LOGRADOURO_FILIAL FOREIGN KEY (tb_mtt_filial_id) REFERENCES TB_MTT_FILIAL (id);
 ALTER TABLE TB_MTT_LOGRADOURO ADD CONSTRAINT FK_LOGRADOURO_CIDADE FOREIGN KEY (tb_mtt_cidade_id) REFERENCES TB_MTT_CIDADE (id);
+
