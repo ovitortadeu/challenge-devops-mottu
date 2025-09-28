@@ -6,29 +6,28 @@ name: 'Build and deploy JAR app to Azure Web App: app-mottu-rm559105'
 on:
   push:
     branches:
-      - main
+    - main
   workflow_dispatch:
 
 jobs:
   build-and-deploy:
     runs-on: ubuntu-latest
-
+    
     steps:
-      - uses: actions/checkout@v2
+    - uses: actions/checkout@v2
+    
+    - name: Set up Java version
+      uses: actions/setup-java@v1
+      with:
+        java-version: '21'
+    
+    - name: Build with Maven
+      run: mvn clean install
 
-      - name: Set up Java version
-        uses: actions/setup-java@v1
-        with:
-          java-version: '21'
-
-      - name: Build with Maven
-        run: mvn clean install --file 'challenge java/demo/pom.xml' -DskipTests
-
-      - name: Deploy to Azure Web App
-        id: deploy-to-webapp
-        uses: azure/webapps-deploy@v2
-        with:
-          app-name: 'app-mottu-rm559105'
-          slot-name: 'production'
-          publish-profile: ${{ secrets.AZUREAPPSERVICE_PUBLISHPROFILE_F51079D7D4C842C39DB5BEC2731ABDAD }}
-          package: '${{ github.workspace }}/challenge java/demo/target/*.jar'
+    - name: Deploy to Azure Web App
+      uses: azure/webapps-deploy@v2
+      with: 
+        app-name: 'app-mottu-rm559105'
+        slot-name: 'production'
+        publish-profile: ${{ secrets.AZUREAPPSERVICE_PUBLISHPROFILE_F51079D7D4C842C39DB5BEC2731ABDAD }}
+        package: '${{ github.workspace }}/target/*.jar'
