@@ -147,3 +147,4 @@ Durante a integração do Flyway com um schema Oracle pré-existente e a configu
 
 *   **Problema:** Erros de "Mapeamento Ambíguo" entre controllers da API e da Web.
     *   **Solução:** Adotamos a prática de prefixar todos os endpoints da API REST com `/api` (ex: `/api/veiculos`), diferenciando-os claramente das rotas da aplicação web (`/veiculos`).
+
