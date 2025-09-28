@@ -2,149 +2,147 @@
 
 ## Visão Geral do Projeto
 
-Este projeto consiste no desenvolvimento de uma aplicação completa para dar suporte à solução do Challenge Mottu. A solução inclui:
-1.  Uma **API REST** robusta para gerenciar entidades cruciais como `Usuários` e `Veículos`.
-2.  Uma **Aplicação Web** com interface visual para interação e gerenciamento dos dados, construída com Thymeleaf e protegida por Spring Security.
+Este projeto consiste no desenvolvimento de uma aplicação completa para dar suporte à solução do Challenge Mottu. A solução inclui uma **API REST** robusta para gerenciar entidades como `Usuários` e `Veículos`, e uma **Aplicação Web** com interface visual para interação e gerenciamento dos dados, construída com Thymeleaf e protegida por Spring Security.
 
 Nesta 3ª Sprint, o foco foi transformar a API base em uma aplicação web funcional, com autenticação, versionamento de banco de dados e uma interface para o CRUD de Veículos.
+
+## Benefícios para o Negócio
+
+A implementação desta solução de gerenciamento de frotas traz benefícios diretos para a Mottu, tais como:
+
+* **Centralização da Gestão:** Unifica o controle de todos os veículos e usuários em uma única plataforma, eliminando planilhas e sistemas descentralizados.
+* **Eficiência Operacional:** Automatiza o cadastro, a atualização e a consulta de dados da frota, reduzindo o tempo gasto em tarefas manuais e a probabilidade de erros.
+* **Segurança da Informação:** Garante que apenas usuários autorizados acessem os dados, com diferentes níveis de permissão (ADMIN e USER), protegendo informações sensíveis.
+* **Tomada de Decisão Baseada em Dados:** Oferece um dashboard com indicadores-chave (total de veículos e usuários), permitindo uma visão rápida e estratégica da operação.
+* **Escalabilidade:** Por ser construída sobre serviços de nuvem PaaS da Azure, a solução pode crescer de forma flexível conforme a demanda do negócio aumenta, sem a necessidade de grandes investimentos em infraestrutura física.
+
+## Arquitetura da Solução Proposta
+
+A arquitetura foi desenhada utilizando serviços PaaS (Plataforma como Serviço) na Azure para garantir alta disponibilidade, escalabilidade e um ciclo de desenvolvimento ágil.
+
+```
++-------------------+      +--------------------------------+      +------------------------+
+|                   |      |                                |      |                        |
+|  Usuário (Admin)  |----->|     Azure App Service          |----->|    Azure SQL Database  |
+|                   |      |  (app-mottu-rm559105)          |      |    (mottu-db)          |
++-------------------+      |                                |      |                        |
+                         |  - Aplicação Java (Spring Boot)  |      +------------------------+
+                         |  - Endpoints REST API (/api)     |
+                         |  - Interface Web (Thymeleaf)     |
+                         +--------------------------------+
+                                       ^
+                                       | Deploy Automatizado (CI/CD)
+                                       |
+                         +--------------------------------+
+                         |                                |
+                         |        GitHub & Actions        |
+                         | (Repositório com Código-Fonte) |
+                         +--------------------------------+
+```
+
+**Fluxo de Funcionamento:**
+
+1.  **Desenvolvimento e Versionamento:** O código-fonte da aplicação é mantido em um repositório no GitHub.
+2.  **CI/CD (Integração e Entrega Contínua):** Qualquer alteração na branch `main` aciona um workflow do GitHub Actions. Esse workflow compila a aplicação Java, gera o artefato `.jar` e o publica automaticamente no Azure App Service.
+3.  **Hospedagem da Aplicação:** O **Azure App Service** executa a aplicação Spring Boot, tornando a interface web e a API REST acessíveis pela internet.
+4.  **Armazenamento de Dados:** A aplicação se conecta a um **Azure SQL Database**, um serviço de banco de dados gerenciado na nuvem, onde todos os dados de usuários e veículos são armazenados de forma segura e persistente.
+5.  **Interação do Usuário:** O usuário final acessa a aplicação web através de um navegador. As operações de CRUD realizadas na interface são processadas pela aplicação no App Service, que por sua vez, interage com o banco de dados para ler ou escrever os dados.
 
 ---
 
 ## Aluno(s)
 
-*   VITOR TADEU SOARES DE SOUSA - RM559105
-*   GIOVANNI DE SOUZA LIMA - RM5566536
+* VITOR TADEU SOARES DE SOUSA - RM559105
+* GIOVANNI DE SOUZA LIMA - RM5566536
 
 ---
 
-## Tecnologias Utilizadas (3ª Sprint)
+## Tecnologias Utilizadas
 
-*   **Linguagem:** Java 21
-*   **Framework Principal:** Spring Boot 3.2.5
-    *   Spring Web
-    *   Spring Data JPA
-    *   Spring Security
-    *   Spring Validation
-*   **Frontend:**
-    *   **Thymeleaf** com Fragmentos (Layout Engine)
-*   **Banco de Dados:**
-    *   Oracle (Ambiente principal)
-    *   **Flyway (Versionamento de Schema)**
-*   **Mapeamento Objeto-Relacional (ORM):** Hibernate
-*   **Mapeamento DTO-Entidade:** MapStruct
-*   **Documentação da API:** SpringDoc OpenAPI (Swagger)
-*   **Autenticação:** Formulário (Web) e JSON Web Tokens (JWT para a API)
-*   **Build Tool:** Apache Maven
+* **Linguagem:** Java 21
+* **Framework Principal:** Spring Boot 3.2.5
+    * Spring Web, Spring Data JPA, Spring Security, Spring Validation
+* **Frontend:** Thymeleaf
+* **Banco de Dados:** Azure SQL (Cloud) e Flyway (Versionamento)
+* **Cloud:** Microsoft Azure (App Service, Azure SQL)
+* **CI/CD:** GitHub Actions
+* **Infraestrutura como Código:** Azure CLI
+* **Documentação da API:** SpringDoc OpenAPI (Swagger)
 
 ---
 
-## Funcionalidades Implementadas (Até a 3ª Sprint)
-
-### Aplicação Web (Foco da 3ª Sprint)
-*   **Interface de Gerenciamento de Veículos:** Páginas para Listar, Criar, Editar e Excluir veículos.
-*   **Autenticação Segura:** Sistema de login e logout via formulário.
-*   **Controle de Acesso por Papel:**
-    *   **ADMIN:** Acesso total ao CRUD de veículos e a um dashboard de indicadores.
-    *   **USER:** Acesso de apenas leitura aos seus próprios veículos.
-*   **Fluxos Não-CRUD:**
-    1.  **Dashboard de Indicadores:** Página que exibe o total de usuários e veículos cadastrados.
-    2.  **Visualização Condicional:** A lista de veículos é filtrada automaticamente com base no perfil do usuário logado.
-*   **Validação de Formulários:** Mensagens de erro são exibidas ao usuário caso os dados inseridos no formulário de veículos sejam inválidos.
-*   **Layout Padronizado:** Uso de fragmentos Thymeleaf para garantir uma experiência visual consistente (cabeçalho, rodapé e menu) e evitar repetição de código (DRY).
-
-### API REST (Funcionalidades da 1ª Sprint - Ainda Ativas)
-*   **CRUD Completo para Usuários e Veículos** via endpoints REST.
-*   **Segurança via JWT** para todos os endpoints da API.
-*   **Documentação completa com Swagger/OpenAPI.**
-
----
-
-## Instruções para Execução do Projeto
+## Instruções para Deploy e Execução
 
 ### Pré-requisitos
 
-*   JDK 21 ou superior instalado.
-*   Apache Maven 3.6.+ instalado.
-*   Acesso a um schema Oracle. As credenciais devem ser ajustadas no arquivo `src/main/resources/application.properties`.
+* Conta ativa na Microsoft Azure.
+* [Azure CLI](https://docs.microsoft.com/pt-br/cli/azure/install-azure-cli) instalado e logado (`az login`).
+* Conta no GitHub.
 
-### Passos para Executar
+### Passo a Passo para o Deploy na Nuvem
 
 1.  **Clone o Repositório:**
     ```bash
-    git clone https://github.com/ovitortadeu/challenge-java-springboot
-    cd ChallengeJavaMottu
+    git clone [https://github.com/ovitortadeu/challenge-devops-mottu](https://github.com/ovitortadeu/challenge-devops-mottu)
+    cd challenge-devops-mottu
     ```
 
-2.  **Configure o Banco de Dados:**
-    *   Abra o arquivo `src/main/resources/application.properties`.
-    *   Altere as propriedades `spring.datasource.username` e `spring.datasource.password` para as suas credenciais do Oracle.
+2.  **Execute o Script de Criação de Recursos:**
+    O script `deploy-mottu.sh` criará todos os recursos necessários na Azure (App Service, SQL Database, etc.) e configurará o pipeline de CI/CD com o GitHub Actions.
 
-3.  **Execute a Aplicação:**
-    *   O Flyway criará e populará o banco de dados automaticamente na primeira inicialização.
+    *Atenção: O script pode solicitar autenticação com o GitHub no seu navegador para configurar o deploy.*
     ```bash
-    mvn spring-boot:run
+    chmod +x "challenge java/demo/deploy-mottu.sh"
+    ./challenge java/demo/deploy-mottu.sh
     ```
 
----
+3.  **Aguarde o Fim do Workflow:**
+    Após a execução do script, acesse a aba "Actions" do seu repositório no GitHub. Um workflow chamado "Build and deploy JAR app to Azure Web App" terá sido iniciado. Aguarde sua conclusão.
 
-## Como Usar a Aplicação Web
+4.  **Acesse a Aplicação:**
+    A URL da sua aplicação será exibida ao final da execução do script, no formato: `http://app-mottu-rm559105.azurewebsites.net`
 
-1.  **Acesse a Página de Login:**
-    *   Abra seu navegador e acesse: [http://localhost:8080/](http://localhost:8080/)
+### Credenciais de Acesso
 
-2.  **Credenciais de Acesso (pré-cadastradas pelo Flyway):**
+A migração do banco de dados (Flyway) cria dois usuários padrão:
 
-    *   **Perfil Administrador:**
-        *   **Usuário:** `admin`
-        *   **Senha:** `admin123`
-        *   **Permissões:** Acesso total ao CRUD de veículos e ao Dashboard.
+* **Perfil Administrador:**
+    * **Usuário:** `admin`
+    * **Senha:** `admin123`
+* **Perfil Usuário Comum:**
+    * **Usuário:** `user`
+    * **Senha:** `user123`
 
-    *   **Perfil Usuário Comum:**
-        *   **Usuário:** `user`
-        *   **Senha:** `user123`
-        *   **Permissões:** Apenas visualização dos seus próprios veículos.
+### Testando a API (Exemplos)
 
----
+Após o deploy, você pode testar os endpoints da API usando uma ferramenta como o `curl` ou o Postman.
 
-## Como Implementamos os Requisitos da 3ª Sprint
+1.  **Obter Token de Autenticação (Login):**
+    ```bash
+    curl -X POST [http://app-mottu-rm559105.azurewebsites.net/api/auth/login](http://app-mottu-rm559105.azurewebsites.net/api/auth/login) \
+    -H "Content-Type: application/json" \
+    -d '{
+        "username": "admin",
+        "password": "admin123"
+    }'
+    ```
+    *Copie o token retornado para usar nos próximos requests.*
 
-### 1. Thymeleaf (Frontend)
-*   **CRUD Completo:** O `VeiculoWebController` possui métodos (`@GetMapping`, `@PostMapping`) que direcionam para as páginas `veiculos/list.html` e `veiculos/form.html`. Essas páginas usam `th:each` para listar, `th:object` para vincular formulários e `th:href` para construir links dinâmicos de edição e exclusão.
-*   **Fragmentos (DRY):** Criamos um arquivo `layout.html` que define um cabeçalho (`th:fragment="header"`) e um rodapé (`th:fragment="footer"`). Todas as outras páginas, como `list.html` e `dashboard.html`, incluem esses fragmentos usando `th:replace="~{layout :: header}"`, garantindo consistência visual e evitando repetição de código HTML.
+2.  **Listar Veículos (GET):**
+    ```bash
+    curl -X GET [http://app-mottu-rm559105.azurewebsites.net/api/veiculos](http://app-mottu-rm559105.azurewebsites.net/api/veiculos) \
+    -H "Authorization: Bearer SEU_TOKEN_AQUI"
+    ```
 
-### 2. Flyway (Versionamento de Banco)
-*   **Configuração:** Adicionamos a dependência do Flyway no `pom.xml`. O Spring Boot o detecta e executa automaticamente na inicialização, lendo os scripts da pasta `src/main/resources/db/migration`.
-*   **4+ Migrações:** Criamos quatro scripts SQL versionados:
-    *   `V1__create_tables.sql`: Cria todas as tabelas da aplicação.
-    *   `V2__add_foreign_keys.sql`: Adiciona os relacionamentos.
-    *   `V3__create_unique_indexes.sql`: Cria os índices.
-    *   `V4__insert_sample_data.sql`: Popula o banco com dados iniciais, incluindo os usuários `admin` e `user` com senhas criptografadas.
-
-### 3. Spring Security (Autenticação e Acesso)
-*   **Autenticação via Formulário:** Na classe `SecurityConfig`, o método `webSecurityFilterChain` utiliza `.formLogin()` para configurar uma página de login personalizada em `/login` e um processo de logout.
-*   **Dois Tipos de Usuário:** A entidade `Usuario` possui um campo `role` do tipo `enum (ADMIN, USER)`. O script do Flyway insere um usuário de cada tipo no banco.
-*   **Proteção de Rotas:**
-    *   **Por URL:** Usamos `.requestMatchers("/veiculos/new", ...).hasRole("ADMIN")` para garantir que apenas administradores possam acessar as URLs de criação/edição/exclusão.
-    *   **Visual:** Nas páginas Thymeleaf, usamos o dialeto de segurança com `sec:authorize="hasRole('ADMIN')"` para exibir ou ocultar botões e links de acordo com o perfil do usuário logado.
-
-### 4. Funcionalidades Completas (Não-CRUD)
-*   **Dois Fluxos:**
-    1.  **Dashboard de Indicadores:** Criamos o `DashboardController` que busca a contagem de registros nos repositórios (`usuarioRepository.count()`, `veiculoRepository.count()`) e os exibe na página `dashboard.html`.
-    2.  **Filtragem de Dados por Perfil:** O método `veiculoService.buscarVeiculosPorPerfil()` verifica o papel do usuário autenticado no `SecurityContextHolder`. Se for `ADMIN`, retorna `findAll()`; se for `USER`, executa uma query customizada (`findByUsuarioUsername`) para retornar apenas os veículos daquele usuário.
-*   **Validações:** A entidade `Veiculo` utiliza anotações do Jakarta Bean Validation (`@NotBlank`, `@NotNull`, `@Size`). No `VeiculoWebController`, o método de salvar utiliza a anotação `@Valid`, e a view `form.html` exibe as mensagens de erro com `th:if="${#fields.hasErrors(...)` e `th:errors`.
-
----
-
-## Desafios e Soluções ("Problemas Possíveis")
-
-Durante a integração do Flyway com um schema Oracle pré-existente e a configuração do Spring Security, encontramos alguns desafios comuns que foram solucionados:
-
-*   **Problema:** Incompatibilidade do hash BCrypt. A senha criptografada inicial não era compatível com a implementação do `PasswordEncoder` do Spring.
-    *   **Solução:** Geramos um novo hash diretamente a partir do código da aplicação, garantindo 100% de compatibilidade, e o salvamos no script de migração do Flyway. Isso assegura que qualquer nova instalação do projeto funcionará corretamente.
-
-*   **Problema:** Conflitos na ordem de inicialização entre Flyway e Hibernate, causando erros de "tabela não encontrada" ou "schema não vazio".
-    *   **Solução:** Após vários ajustes, a solução definitiva foi garantir que o banco estivesse completamente limpo e usar a configuração padrão do Spring Boot, permitindo que o Flyway construísse o schema do zero sem interferências.
-
-*   **Problema:** Erros de "Mapeamento Ambíguo" entre controllers da API e da Web.
-    *   **Solução:** Adotamos a prática de prefixar todos os endpoints da API REST com `/api` (ex: `/api/veiculos`), diferenciando-os claramente das rotas da aplicação web (`/veiculos`).
-
+3.  **Criar um Novo Veículo (POST):**
+    *Primeiro, obtenha o ID de um usuário existente (ex: user = 2, flima = 3).*
+    ```bash
+    curl -X POST [http://app-mottu-rm559105.azurewebsites.net/api/veiculos](http://app-mottu-rm559105.azurewebsites.net/api/veiculos) \
+    -H "Content-Type: application/json" \
+    -H "Authorization: Bearer SEU_TOKEN_AQUI" \
+    -d '{
+        "usuarioId": 3,
+        "placaNova": "XYZ1A23",
+        "tipoVeiculo": "Motocicleta de Teste"
+    }'
+    ```
