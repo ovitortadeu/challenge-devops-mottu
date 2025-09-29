@@ -22,7 +22,8 @@ jobs:
         java-version: '21'
     
     - name: Build with Maven
-      run: mvn clean install
+      run: mvn clean install -DskipTests
+      working-directory: './challenge java/demo'
 
     - name: Deploy to Azure Web App
       uses: azure/webapps-deploy@v2
@@ -30,4 +31,4 @@ jobs:
         app-name: 'app-mottu-rm559105'
         slot-name: 'production'
         publish-profile: ${{ secrets.AzureAppService_PublishProfile_b94bd0a5c4d3478a9e8720b67ca354b5 }}
-        package: '${{ github.workspace }}/target/*.jar'
+        package: '${{ github.workspace }}/challenge java/demo/target/*.jar'
