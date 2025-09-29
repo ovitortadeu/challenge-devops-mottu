@@ -21,23 +21,8 @@ A implementação desta solução de gerenciamento de frotas traz benefícios di
 A arquitetura foi desenhada utilizando serviços PaaS (Plataforma como Serviço) na Azure para garantir alta disponibilidade, escalabilidade e um ciclo de desenvolvimento ágil.
 
 ```
-+-------------------+      +--------------------------------+      +------------------------+
-|                   |      |                                |      |                        |
-|  Usuário (Admin)  |----->|     Azure App Service          |----->|    Azure SQL Database  |
-|                   |      |  (app-mottu-rm559105)          |      |    (mottu-db)          |
-+-------------------+      |                                |      |                        |
-                         |  - Aplicação Java (Spring Boot)  |      +------------------------+
-                         |  - Endpoints REST API (/api)     |
-                         |  - Interface Web (Thymeleaf)     |
-                         +--------------------------------+
-                                       ^
-                                       | Deploy Automatizado (CI/CD)
-                                       |
-                         +--------------------------------+
-                         |                                |
-                         |        GitHub & Actions        |
-                         | (Repositório com Código-Fonte) |
-                         +--------------------------------+
+<img width="548" height="611" alt="image" src="https://github.com/user-attachments/assets/2cbd9c29-eb9f-4b29-b4b9-55ffc14d402c" />
+
 ```
 
 **Fluxo de Funcionamento:**
