@@ -1,0 +1,39 @@
+trigger:
+- main
+
+pool:
+  vmImage: 'ubuntu-latest'
+
+steps:
+- task: Maven@3
+  displayName: 'Build and Test with Maven'
+  inputs:
+    mavenPomFile: 'challenge java/demo/pom.xml' 
+    mavenOptions: '-Xmx3072m'
+    javaHome: 'JDKVersion'
+    jdkVersion: '21' 
+    jdkArchitecture: 'x64'
+    publishJUnitTestResults: true
+    testResultsFiles: '**/surefire-reports/TEST-*.xml'
+    goals: 'clean install' 
+
+- task: CopyFiles@2
+  displayName: 'Copy Dockerfile'
+  inputs:
+    SourceFolder: '$(Build.SourcesDirectory)'
+    Contents: 'Dockerfile' 
+    TargetFolder: '$(Build.ArtifactStagingDirectory)'
+
+- task: CopyFiles@2
+  displayName: 'Copy JAR'
+  inputs:
+    SourceFolder: '$(Build.SourcesDirectory)/challenge java/demo/target' 
+    Contents: '*.jar'
+    TargetFolder: '$(Build.ArtifactStagingDirectory)'
+
+- task: PublishBuildArtifacts@1
+  displayName: 'Publish Artifacts (JAR + Dockerfile)'
+  inputs:
+    PathtoPublish: '$(Build.ArtifactStagingDirectory)'
+    ArtifactName: 'drop' 
+    publishLocation: 'Container'
